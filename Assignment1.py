@@ -5,8 +5,6 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib.image import imread
-import numpy as np
-import cv2 as cv
 
 # read data from csv file
 data = pd.read_csv("Labeled Data.csv")
@@ -22,7 +20,7 @@ plt.ylabel("Count")
 plt.title("Class Distribution")
 
 
-# 2) PLOT RANDOM IMAGES
+# 2) PLOT RANDOM SAMPLE IMAGES WITH THEIR PIXEL INTENSITY DISTRIBUTION
 
 dataFrame = pd.DataFrame(data)
 
@@ -63,6 +61,7 @@ NeutralSample_Set3 = NeutralSample[10:15]
 NeutralSample_Set4 = NeutralSample[15:20]
 NeutralSample_Set5 = NeutralSample[20:25]
 # Display the 25 Neutral images by populating each row in the grid
+# And display each image's pixel intensity distribution
 for i, (index, row) in enumerate(NeutralSample_Set1.iterrows()):
     image_path = row['path']
     image = imread(image_path)
@@ -120,6 +119,7 @@ FocusedSample_Set3 = FocusedSample[10:15]
 FocusedSample_Set4 = FocusedSample[15:20]
 FocusedSample_Set5 = FocusedSample[20:25]
 # Display the 25 Focused images by populating each row in the grid
+# And display each image's pixel intensity distribution
 for i, (index, row) in enumerate(FocusedSample_Set1.iterrows()):
     image_path = row['path']
     image = imread(image_path)
@@ -181,6 +181,7 @@ SurprisedSample_Set3 = SurprisedSample[10:15]
 SurprisedSample_Set4 = SurprisedSample[15:20]
 SurprisedSample_Set5 = SurprisedSample[20:25]
 # Display the 25 Surprised images by populating each row in the grid
+# And display each image's pixel intensity distribution
 for i, (index, row) in enumerate(SurprisedSample_Set1.iterrows()):
     image_path = row['path']
     image = imread(image_path)
@@ -242,6 +243,7 @@ HappySample_Set3 = HappySample[10:15]
 HappySample_Set4 = HappySample[15:20]
 HappySample_Set5 = HappySample[20:25]
 # Display the 25 Happy images by populating each row in the grid
+# And display each image's pixel intensity distribution
 for i, (index, row) in enumerate(HappySample_Set1.iterrows()):
     image_path = row['path']
     image = imread(image_path)
