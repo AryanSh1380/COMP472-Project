@@ -24,52 +24,6 @@ import numpy as np
 import pandas as pd
 
 
-# Function to load CIFAR10 dataset
-
-
-def cifar_loader(batch_size, shuffle_test=False):
-    # Normalization values for CIFAR10 dataset
-    normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406],
-                                     std=[0.225, 0.225, 0.225])
-    # Loading training dataset with data augmentation techniques
-    train_dataset = datasets.CIFAR10('./data', train=True, download=True,
-                                     transform=transforms.Compose([
-                                         transforms.RandomHorizontalFlip(),
-                                         transforms.RandomCrop(32, 4),
-                                         transforms.ToTensor(),
-                                         normalize
-                                     ]))
-    # Loading test dataset
-    test_dataset = datasets.CIFAR10('./data', train=False,
-                                    transform=transforms.Compose([
-                                        transforms.ToTensor(),
-                                        normalize
-                                    ]))
-    # Creating data loaders for training and testing
-    train_loader = td.DataLoader(train_dataset, batch_size=batch_size,
-                                 shuffle=True, pin_memory=True)
-    test_loader = td.DataLoader(test_dataset, batch_size=batch_size,
-                                shuffle=shuffle_test, pin_memory=True)
-    return train_loader, test_loader
-
-
-# Hyperparameters and settings
-
-
-# class DataloaderName(Dataset):
-#     def __init__(self, inputprameters):
-#
-#         #codes
-#
-#     def __getitem__(self, index):
-#
-#         # code
-#
-#         return output
-#
-#     def __len__(self):
-#         return self.__data.shape[0]
-
 
 class Pclass(Dataset):
     def __init__(self, mode):
@@ -93,46 +47,31 @@ class Pclass(Dataset):
         label = self.labels[idx]  # Get label
         return img, label
 
-    # def __len__(self):
-    #     return len(self.allaimges)
-    #
-    # def __getitem__(self, idx):
-    #     Im = self.mytransform(Image.open(self.allaimges[idx]))
-    #     Cls = self.clsLabel[idx]
-    #
-    #     return Im, Cls
 
 
 class MultiLayerFCNet(nn.Module):
     def __init__(self, input_size, hidden_size, output_size):
         super().__init__()
 
-        # self.fc1 = nn.Linear(input_size, hidden_size)
-        # self.fc2 = nn.Linear(hidden_size, hidden_size)
-        # self.fc3 = nn.Linear(hidden_size, output_size)
-
-        self.layer1 = nn.Conv2d(3, 32, 3, padding=1, stride=1)
+        self.layer1 = nn.Conv2d(in_channels=3, out_channels=32, kernel_size=3, padding=1, stride=1)
         self.B1 = nn.BatchNorm2d(32)
-        self.layer2 = nn.Conv2d(32, 32, 3, padding=1, stride=1)
+        self.layer2 = nn.Conv2d(in_channels=32, out_channels=32, kernel_size=3, padding=1, stride=1)
         self.B2 = nn.BatchNorm2d(32)
         self.Maxpool = nn.MaxPool2d(2)
-        self.layer3 = nn.Conv2d(32, 64, 3, padding=1, stride=1)
+        self.layer3 = nn.Conv2d(in_channels=32, out_channels=64, kernel_size=3, padding=1, stride=1)
         self.B3 = nn.BatchNorm2d(64)
-        self.layer4 = nn.Conv2d(64, 64, 3, padding=1, stride=1)
+        self.layer4 = nn.Conv2d(in_channels=64, out_channels=64, kernel_size=3, padding=1, stride=1)
         self.B4 = nn.BatchNorm2d(64)
 
-        self.layer5 = nn.Conv2d(64, 128, 3, padding=1, stride=1)
+        self.layer5 = nn.Conv2d(in_channels=64, out_channels=128, kernel_size=3, padding=1, stride=1)
         self.B5 = nn.BatchNorm2d(128)
 
-        self.layer6 = nn.Conv2d(128, 256, 3, padding=1, stride=1)
+        self.layer6 = nn.Conv2d(in_channels=128, out_channels=256, kernel_size=3, padding=1, stride=1)
         self.B6 = nn.BatchNorm2d(256)
 
         self.fc = nn.Linear(256 * 6 * 6, 4)
 
     def forward(self, x):
-        # x = F.relu(self.fc1(x.view(x.size(0),-1)))
-        # x = F.relu(self.fc2(x))
-        # return F.log_softmax(self.fc3(x), dim=1)
 
         x = self.B1(F.leaky_relu(self.layer1(x)))
         x = self.Maxpool(F.leaky_relu(self.layer2(x)))
@@ -152,7 +91,7 @@ if __name__ == '__main__':
     test_batch_size = 100
     input_size = 3 * 96 * 96  # 3 channels, 32x32 image size
     hidden_size = 50  # Number of hidden units
-    output_size = 10  # Number of output classes (CIFAR-10 has 10 classes)
+    output_size = 4  # Number of output classes
     num_epochs = 10
 
     mode = 'train'
@@ -166,12 +105,6 @@ if __name__ == '__main__':
 
     testset = Pclass('test')
     testloader = DataLoader(testset, batch_size, shuffle=True, num_workers=8, drop_last=True)
-
-    # train_loader, _ = cifar_loader(batch_size)
-    # _, test_loader = cifar_loader(test_batch_size)
-    # dataloader = DataLoader(dataset=IrisDataset('iris.data'),
-    #                         batch_size=10,
-    #                         shuffle=True)
 
     epochs = 5
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
