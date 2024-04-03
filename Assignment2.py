@@ -114,7 +114,7 @@ class MultiLayerFCNet(nn.Module):
 
 if __name__ == '__main__':
 
-    batch_size = 32
+    batch_size = 256
     input_size = 3 * 96 * 96  # 3 channels, 96x96 image size
     hidden_size = 50  # Number of hidden units
     output_size = 4  # Number of output classes
@@ -131,14 +131,14 @@ if __name__ == '__main__':
     testset = Pclass('test')
     testloader = DataLoader(testset, batch_size, shuffle=True, num_workers=8, drop_last=True)
 
-    epochs = 50
+    epochs = 5
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     model = MultiLayerFCNet(input_size, hidden_size, output_size)
     model = nn.DataParallel(model)
     model.to(device)
 
     criterion = nn.CrossEntropyLoss()
-    optimizer = optim.Adam(model.parameters(), lr=0.001)
+    optimizer = optim.Adam(model.parameters(), lr=0.00001)
     BestACC = 0
     for epoch in range(epochs):
         running_loss = 0
@@ -173,7 +173,7 @@ if __name__ == '__main__':
         if accuracy > BestACC:
             BestACC = accuracy
 
-            torch.save(model.state_dict(), 'C:/Users/saaba/Desktop/model_epoc50_k3_11Layer.pt')
+            torch.save(model.state_dict(), 'C:/Users/saaba/Desktop/COMP472-Project/test3.pt')
 
         print(f'Best accuracy on the test set: {BestACC:.2f}%')
 
