@@ -12,25 +12,22 @@
 - Python Code: 
 "Assignment1.py" --> Contains code for reading data from the csv file containing image paths and labels + Contains code for computing the class distribution + Contains code for displaying a sample of the images from each class along with their pixel intensity distribution
 
-"Ass2_mainModel.py" --> Contains code for creating and training the main CNN model /
+"Ass2_mainModel.py" --> Contains code for creating and training the main CNN model 
 
-"Ass2_modelVar1.py" --> Contains code for creating and training the variant 1 CNN model /
+"Ass2_modelVar1.py" --> Contains code for creating and training the variant 1 CNN model 
 
-"Ass2_modelVar2.py" --> Contains code for creating and training the variant 2 CNN model /
+"Ass2_modelVar2.py" --> Contains code for creating and training the variant 2 CNN model 
 
-"modelEvaluation.py" --> Contains code for evaluating main model /
+"modelEvaluation.py" --> Contains code for evaluating main model 
 
-"modelEvaluation_Var1" --> Contains code for evaluating variant 1 /
+"modelEvaluation_Var1" --> Contains code for evaluating variant 1 
 
-"modelEvalation_Var2" --> Contains code for evaluating variant 2 /
+"modelEvalation_Var2" --> Contains code for evaluating variant 2 
 
-"picEval.py" --> Contains code for testing the model for 1 image /
+"picEval.py" --> Contains code for testing the model for 1 image 
 
 
-- CNN Models 
-. Main Model --> main_model.pt      
-. Variant 1 --> modelVar1.pt      
-. Variant 2 --> modelVar2.pt 
+- CNN Models: Main Model --> main_model.pt  +  Variant 1 --> modelVar1.pt  +  Variant 2 --> modelVar2.pt 
 
 - README.txt (this file) 
 
