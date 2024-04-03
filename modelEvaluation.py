@@ -1,77 +1,69 @@
-import torch
-import numpy as np
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, confusion_matrix
+import torch
 from torch.utils.data import DataLoader
 import matplotlib.pyplot as plt
 import seaborn as sns
-from Assignment2 import MultiLayerFCNet, Pclass
+from Ass2_mainModel import MultiLayerFCNet, Pclass  # Ensure correct import paths
+import torch.nn as nn
+
 
 def run_eval():
 
-    input_size = 3 * 96 * 96  # 3 channels, 96x96 image size
-    hidden_size = 50  # Number of hidden units
-    output_size = 4  # Number of output classes
-
+    # Set device to GPU if available
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
-    test_data = Pclass('test')
-    load = DataLoader(test_data, batch_size=256, shuffle=False, num_workers=8, drop_last=True)
+    # Initialize dataset for testing
+    testset = Pclass('test')
+    testloader = DataLoader(testset, batch_size=32, shuffle=False, num_workers=4)
 
-    model = MultiLayerFCNet(input_size, hidden_size, output_size)
-    model.load_state_dict(torch.load('model_epoc50_k3_11Layer.pt', map_location=device), strict=False)
-    model.to(device)  # Ensure the model is on the correct device
-    model.eval()  # Set the model to evaluation mode
-
+    # Initialize the model
+    model = MultiLayerFCNet().to(device)
+    model = nn.DataParallel(model)
+    # Load the model with given parameters
+    model.load_state_dict(torch.load('modelVar2.pt', map_location=device))
+    # Set model to evaluation mode
+    model.eval()
 
     true_labels = []
     predicted_labels = []
 
     with torch.no_grad():
-        for input, labels in load:
-            input = input.to(device) if torch.cuda.is_available() else input
-            output = model(input)
-            _, predicted = torch.max(output.data, 1)
-            predicted_labels.extend(predicted.cpu().tolist() if torch.cuda.is_available() else predicted.tolist())
-            true_labels.extend(labels.tolist())
+        for inputs, labels in testloader:
+            inputs = inputs.to(device)
+            labels = labels.to(device)
+            outputs = model(inputs)
+            _, predicted = torch.max(outputs.data, 1)
+            true_labels.extend(labels.cpu().numpy())
+            predicted_labels.extend(predicted.cpu().numpy())
 
-    accuracy = accuracy_score(np.array(true_labels), predicted_labels)
-    print("Accuracy on test set: ", accuracy)
+    # Compute metrics(macro and micro)
+    acc = accuracy_score(true_labels, predicted_labels)
 
-    precision = precision_score(np.array(true_labels), predicted_labels, average='macro', zero_division=1)
-    print("Precision on test set: ", precision)
+    print(f'Accuracy: {acc}')
+    precision_macro = precision_score(true_labels, predicted_labels, average='macro')
+    recall_macro = recall_score(true_labels, predicted_labels, average='macro')
+    f1_macro = f1_score(true_labels, predicted_labels, average='macro')
+    print(f"Precision Macro: {precision_macro}")
+    print(f"Recall Macro: {recall_macro}")
+    print(f"F1 Score Macro: {f1_macro}")
 
-    recall = recall_score(np.array(true_labels), predicted_labels, average='macro', zero_division=1)
-    print("Recall on test set: ", recall)
+    precision_micro = precision_score(true_labels, predicted_labels, average='micro')
+    recall_micro = recall_score(true_labels, predicted_labels, average='micro')
+    f1_micro = f1_score(true_labels, predicted_labels, average='micro')
+    print(f"Precision Micro: {precision_micro}")
+    print(f"Recall Micro: {recall_micro}")
+    print(f"F1 Score Micro: {f1_micro}")
 
-    f1_measure = f1_score(np.array(true_labels), predicted_labels, average='macro', zero_division=1)
-    print("F1 on test set: ", f1_measure)
+    # Compute and plot confusion matrix
+    cm = confusion_matrix(true_labels, predicted_labels)
+    sns.heatmap(cm, annot=True, fmt='d', cmap='Greens',
+                xticklabels=['Neutral', 'Surprised', 'Happy', 'Focused'],
+                yticklabels=['Neutral', 'Surprised', 'Happy', 'Focused'])
+    plt.xlabel('Predicted labels')
+    plt.ylabel('True labels')
+    plt.title('Confusion Matrix')
+    plt.show()
 
-    class_names = {0: 'Neutral', 1: 'Surprised', 2: 'Happy', 3: 'Focused'}
-
-    conf_matrix = confusion_matrix(np.array(true_labels), predicted_labels)
-    for i in range(len(conf_matrix)):  # Assuming conf_matrix is square
-        tn, fp, fn, tp = calculate_tn_fp_fn_tp(conf_matrix, i)
-        class_name = class_names[i]
-        print(f"'{class_name}' - TN: {tn}, FP: {fp}, FN: {fn}, TP: {tp}")
-
-    # Plotting the confusion matrix
-    # plt.figure(figsize=(10, 7))
-    # sns.heatmap(conf_matrix, annot=True, fmt="d", cmap="Blues", xticklabels=range(1, 5), yticklabels=range(1, 5))
-    # plt.title("Confusion Matrix")
-    # plt.xlabel("Predicted Labels")
-    # plt.ylabel("True Labels")
-    # plt.show()
-
-def calculate_tn_fp_fn_tp(conf_matrix, class_index):
-    # True Positive (TP)
-    tp = conf_matrix[class_index, class_index]
-    # False Positive (FP): Sum of column for class_index excluding TP
-    fp = conf_matrix[:, class_index].sum() - tp
-    # False Negative (FN): Sum of row for class_index excluding TP
-    fn = conf_matrix[class_index, :].sum() - tp
-    # True Negative (TN): Sum of all elements excluding the row and column for class_index
-    tn = conf_matrix.sum() - (fp + fn + tp)
-    return tn, fp, fn, tp
 
 if __name__ == '__main__':
     run_eval()
