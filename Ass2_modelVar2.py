@@ -19,14 +19,17 @@ class Pclass(Dataset):
 
         # Splitting the data into train and test sets with fixed random state
         train_df, test_df = train_test_split(data_frame, test_size=0.15, random_state=42)
+        training, validation = train_test_split(train_df, test_size=0.1765, random_state=42)
 
         # Select the appropriate subset based on mode
         if mode == 'train':
-            self.data_frame = train_df
+            self.data_frame = training
+        elif mode == 'validation':
+            self.data_frame = validation
         elif mode == 'test':
             self.data_frame = test_df
         else:
-            raise ValueError("Mode must be 'train' or 'test'")
+            raise ValueError("Mode must be 'train', 'validation' or 'test'")
 
         # Extract image paths and labels
         self.image_paths = self.data_frame['path'].tolist()
@@ -98,6 +101,7 @@ class MultiLayerFCNet(nn.Module):
         self.layer11 = nn.Conv2d(in_channels=512, out_channels=1024, kernel_size=k_size, padding=3, stride=1)
         self.B11 = nn.BatchNorm2d(1024)
 
+        # TODO: UPDATE IF NEEDED
         self.fc = nn.Linear(1024*7*7, 4)
 
     def forward(self, x):
@@ -130,6 +134,9 @@ if __name__ == '__main__':
     trainset = Pclass('train')
     Trainloader = DataLoader(trainset, batch_size, shuffle=True, num_workers=8, drop_last=True)
 
+    validationset = Pclass('validation')
+    ValidationLoader = DataLoader(validationset, batch_size, shuffle=True, num_workers=8, drop_last=True
+                                  )
     testset = Pclass('test')
     testloader = DataLoader(testset, batch_size, shuffle=True, num_workers=8, drop_last=True)
 
@@ -168,7 +175,7 @@ if __name__ == '__main__':
         total = 0
         correct = 0
         with torch.no_grad():  # Disable gradient calculations
-            for instances, labels in testloader:
+            for instances, labels in ValidationLoader:
                 instances, labels = instances.to(device), labels.to(device)
                 output = model(instances)  # Forward pass
                 _, predicted = torch.max(output.data, 1)  # Prediction
@@ -176,13 +183,13 @@ if __name__ == '__main__':
                 correct += (predicted == labels).sum().item()
 
         accuracy = 100 * correct / total
-        print(f'Accuracy on the test set: {accuracy:.2f}%')
+        print(f'Accuracy on the validation set: {accuracy:.2f}%')
 
         if accuracy > BestACC:
             BestACC = accuracy
 
             torch.save(model.state_dict(), 'C:/Users/saaba/Desktop/COMP472-Project/modelVar2.pt')
 
-        print(f'Best accuracy on the test set: {BestACC:.2f}%')
+        print(f'Best accuracy on the validation set: {BestACC:.2f}%')
 
         model.train()
