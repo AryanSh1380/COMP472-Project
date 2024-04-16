@@ -58,7 +58,8 @@ def run_eval():
     cm = confusion_matrix(true_labels, predicted_labels)
     sns.heatmap(cm, annot=True, fmt='d', cmap='Greens',
                 xticklabels=['Neutral', 'Surprised', 'Happy', 'Focused'],
-                yticklabels=['Neutral', 'Surprised', 'Happy', 'Focused'])
+                yticklabels=['Neutral', 'Surprised', 'Happy', 'Focused'],
+                annot_kws={"size":12, "weight":"bold", "color":"black"})
     plt.xlabel('Predicted labels')
     plt.ylabel('True labels')
     plt.title('Confusion Matrix')
