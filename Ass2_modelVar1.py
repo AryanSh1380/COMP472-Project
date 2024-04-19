@@ -182,7 +182,7 @@ if __name__ == '__main__':
         if accuracy > BestACC:
             BestACC = accuracy
 
-            torch.save(model.state_dict(), 'C:/Users/saaba/Desktop/COMP472-Project/modelVar1.pt')
+            torch.save(model.state_dict(), 'C:/Users/saaba/Documents/COMP472-Project/modelVar1.pt')
 
         print(f'Best accuracy on the validation set: {BestACC:.2f}%')
 

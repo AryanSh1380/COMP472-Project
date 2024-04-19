@@ -63,46 +63,47 @@ class MultiLayerFCNet(nn.Module):
         super().__init__()
 
         # Kernel size for layers
-        k_size = 7
+        k_size1 = 3
+        k_size2 = 5
 
         # 1st convolutional block with batch normalizations
-        self.layer1 = nn.Conv2d(in_channels=3, out_channels=32, kernel_size=k_size, padding=3, stride=1)
+        self.layer1 = nn.Conv2d(in_channels=3, out_channels=32, kernel_size=k_size2, padding=3, stride=1)
         self.B1 = nn.BatchNorm2d(32)
 
-        self.layer2 = nn.Conv2d(in_channels=32, out_channels=32, kernel_size=k_size, padding=3, stride=1)
+        self.layer2 = nn.Conv2d(in_channels=32, out_channels=32, kernel_size=k_size2, padding=3, stride=1)
         self.B2 = nn.BatchNorm2d(32)
 
         self.Maxpool = nn.MaxPool2d(2)
 
-        self.layer3 = nn.Conv2d(in_channels=32, out_channels=64, kernel_size=k_size, padding=3, stride=1)
+        self.layer3 = nn.Conv2d(in_channels=32, out_channels=64, kernel_size=k_size2, padding=3, stride=1)
         self.B3 = nn.BatchNorm2d(64)
 
-        self.layer4 = nn.Conv2d(in_channels=64, out_channels=64, kernel_size=k_size, padding=3, stride=1)
+        self.layer4 = nn.Conv2d(in_channels=64, out_channels=64, kernel_size=k_size2, padding=3, stride=1)
         self.B4 = nn.BatchNorm2d(64)
 
-        self.layer5 = nn.Conv2d(in_channels=64, out_channels=128, kernel_size=k_size, padding=3, stride=1)
+        self.layer5 = nn.Conv2d(in_channels=64, out_channels=128, kernel_size=k_size2, padding=3, stride=1)
         self.B5 = nn.BatchNorm2d(128)
 
-        self.layer6 = nn.Conv2d(in_channels=128, out_channels=128, kernel_size=k_size, padding=3, stride=1)
+        self.layer6 = nn.Conv2d(in_channels=128, out_channels=128, kernel_size=k_size1, padding=3, stride=1)
         self.B6 = nn.BatchNorm2d(128)
 
-        self.layer7 = nn.Conv2d(in_channels=128, out_channels=256, kernel_size=k_size, padding=3, stride=1)
+        self.layer7 = nn.Conv2d(in_channels=128, out_channels=256, kernel_size=k_size1, padding=3, stride=1)
         self.B7 = nn.BatchNorm2d(256)
 
-        self.layer8 = nn.Conv2d(in_channels=256, out_channels=256, kernel_size=k_size, padding=3, stride=1)
+        self.layer8 = nn.Conv2d(in_channels=256, out_channels=256, kernel_size=k_size1, padding=3, stride=1)
         self.B8 = nn.BatchNorm2d(256)
 
-        self.layer9 = nn.Conv2d(in_channels=256, out_channels=512, kernel_size=k_size, padding=3, stride=1)
+        self.layer9 = nn.Conv2d(in_channels=256, out_channels=512, kernel_size=k_size1, padding=3, stride=1)
         self.B9 = nn.BatchNorm2d(512)
 
-        self.layer10 = nn.Conv2d(in_channels=512, out_channels=512, kernel_size=k_size, padding=3, stride=1)
+        self.layer10 = nn.Conv2d(in_channels=512, out_channels=512, kernel_size=k_size1, padding=3, stride=1)
         self.B10 = nn.BatchNorm2d(512)
 
-        self.layer11 = nn.Conv2d(in_channels=512, out_channels=1024, kernel_size=k_size, padding=3, stride=1)
+        self.layer11 = nn.Conv2d(in_channels=512, out_channels=1024, kernel_size=k_size1, padding=3, stride=1)
         self.B11 = nn.BatchNorm2d(1024)
 
         # TODO: UPDATE IF NEEDED
-        self.fc = nn.Linear(1024 * 1 * 1, 4)
+        self.fc = nn.Linear(1024 * 12 * 12, 4)
 
     def forward(self, x):
         # Forward Pass initialization
@@ -188,7 +189,7 @@ if __name__ == '__main__':
         if accuracy > BestACC:
             BestACC = accuracy
 
-            torch.save(model.state_dict(), 'C:/Users/saaba/Desktop/COMP472-Project/modelVar2.pt')
+            torch.save(model.state_dict(), 'C:/Users/saaba/Documents/COMP472-Project/modelVar2.pt')
 
         print(f'Best accuracy on the validation set: {BestACC:.2f}%')
 
