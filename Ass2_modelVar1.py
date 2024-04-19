@@ -98,7 +98,7 @@ class MultiLayerFCNet(nn.Module):
 
         # Last fully connected layer for 4 categories
         # TODO: UPDATE IF NEEDED
-        self.fc = nn.Linear(512 * 5 * 5, 4)
+        self.fc = nn.Linear(512 * 3 * 3, 4)
 
     def forward(self, x):
         # Forward Pass initialization

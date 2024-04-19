@@ -102,7 +102,7 @@ class MultiLayerFCNet(nn.Module):
         self.B11 = nn.BatchNorm2d(1024)
 
         # TODO: UPDATE IF NEEDED
-        self.fc = nn.Linear(1024*7*7, 4)
+        self.fc = nn.Linear(1024 * 1 * 1, 4)
 
     def forward(self, x):
         # Forward Pass initialization
