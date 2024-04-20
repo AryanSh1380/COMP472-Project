@@ -3,8 +3,9 @@ from torchvision import transforms
 from PIL import Image
 from collections import OrderedDict
 
-#DEPENDING ON THE MODEL YOU USE COMMENT OUT THE 2 OTHER IMPORTS
-from Ass2_mainModel import MultiLayerFCNet
+#DEPENDING ON THE MODEL YOU USE COMMENT OUT THE 3 OTHER IMPORTS
+from kFold import MultiLayerFCNet
+# from Ass2_mainModel import MultiLayerFCNet
 # from Ass2_modelVar1 import MultiLayerFCNet
 # from Ass2_modelVar2 import MultiLayerFCNet
 
@@ -54,13 +55,14 @@ def predict_image(model, image_path):
 
 if __name__ == "__main__":
 
-    # Path to the trained model (CHOOSE THE MODEL YOU WANT TO TEST & COMMENT OUT THE 2 OTHERS)
-    model_path = 'main_model.pt'
+    # Path to the trained model (CHOOSE THE MODEL YOU WANT TO TEST & COMMENT OUT THE 3 OTHERS)
+    model_path = 'checkpoint/best_model.pt'
+    # model_path = 'main_model.pt'
     # model_path = 'modelVar1.pt'
     # model_path = 'modelVar2.pt'
 
     # Path to the image you want to predict
-    image_path = 'Happy/ffhq_30.png'
+    image_path = 'Happy/ffhq_108.png'
 
     # Load the trained model
     model = load_model(model_path)
