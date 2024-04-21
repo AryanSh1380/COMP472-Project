@@ -89,7 +89,7 @@ def run_eval():
     model = MultiLayerFCNet().to(device)
     model = nn.DataParallel(model)
     # Load the model with given parameters
-    model.load_state_dict(torch.load('main_model.pt', map_location=device))
+    model.load_state_dict(torch.load('main_model_bias.pt', map_location=device))
     # Set model to evaluation mode
     model.eval()
 
